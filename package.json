@@ -1,0 +1,52 @@
+{
+  "name": "RNGoogleAds",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "refresh": "yarn install && yarn run podInstall && yarn run androidClean",
+    "android": "npx react-native run-android",
+    "androidClean": "cd android && ./gradlew clean && cd ..",
+    "androidUpdate": "npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res && rm -rf ./android/app/src/main/res/drawable-* && rm -rf ./android/app/src/main/res/raw",
+    "androidBuild": "cd android && ./gradlew assembleRelease && cd ..",
+    "ios": "npx react-native run-ios",
+    "podInstall": "cd ios && pod install && cd ..",
+    "linkingFonts": "npx react-native-asset",
+    "lint": "eslint .",
+    "start": "npx react-native start --reset-cache",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@react-native-masked-view/masked-view": "^0.3.1",
+    "@react-navigation/native": "^6.1.10",
+    "@react-navigation/stack": "^6.3.21",
+    "@reduxjs/toolkit": "^2.2.1",
+    "axios": "^1.6.7",
+    "react": "18.2.0",
+    "react-native": "0.73.1",
+    "react-native-gesture-handler": "^2.15.0",
+    "react-native-google-mobile-ads": "^12.11.0",
+    "react-native-safe-area-context": "^4.9.0",
+    "react-native-screens": "^3.29.0",
+    "react-redux": "^9.1.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.0",
+    "@babel/preset-env": "^7.20.0",
+    "@babel/runtime": "^7.20.0",
+    "@react-native/babel-preset": "^0.73.18",
+    "@react-native/eslint-config": "^0.73.1",
+    "@react-native/metro-config": "^0.73.2",
+    "@react-native/typescript-config": "^0.73.1",
+    "@types/react": "^18.2.6",
+    "@types/react-test-renderer": "^18.0.0",
+    "babel-jest": "^29.6.3",
+    "eslint": "^8.19.0",
+    "jest": "^29.6.3",
+    "prettier": "2.8.8",
+    "react-test-renderer": "18.2.0",
+    "typescript": "5.0.4"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

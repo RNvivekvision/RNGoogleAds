@@ -34,8 +34,6 @@ const rewardedInterstitial = RewardedInterstitialAd.createForAdRequest(
 const useGoogleAds = () => {
   const [State, setState] = useState({ isLoading: 0 });
 
-  console.log({ State });
-
   useEffect(() => {
     // initializeMobileAds();
   }, []);

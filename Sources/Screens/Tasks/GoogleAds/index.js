@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, ScrollView } from 'react-native';
+import { ScrollView } from 'react-native';
 import {
   BannerAd,
   BannerAdSize,
@@ -13,21 +13,20 @@ import { useGoogleAds } from '../../../Hooks';
 import { DummyData } from '../../../Utils';
 
 const GoogleAds = ({ navigation }) => {
-  const { appOpenAd, interstitial, rewarded, rewardedInterstitial } =
-    useGoogleAds();
-  const [State, setState] = useState({
-    isLoading: 0,
-    bannerAd: false,
-    gamAd: false,
-  });
+  const { appOpenAd, interstitialAd, rewardAd, Admob } = useGoogleAds();
+  const [State, setState] = useState({ bannerAd: false, gamAd: false });
+  const bannerId = __DEV__ ? TestIds.ADAPTIVE_BANNER : Admob?.banner;
 
   const showAds = async method => {
     try {
       console.log(`isLoaded ->  `, method.loaded);
       if (method.loaded) {
-        await method.show();
+        method.show();
       } else {
-        await method.load();
+        method.load();
+        setTimeout(() => {
+          showAds(method);
+        }, 2000);
       }
     } catch (e) {
       console.log('Erro Show Error -> ', e);
@@ -36,26 +35,21 @@ const GoogleAds = ({ navigation }) => {
 
   const methods = {
     0: () => showAds(appOpenAd),
-    1: () => showAds(interstitial),
-    2: () => showAds(rewarded),
-    3: () => showAds(rewardedInterstitial),
-    4: () => setState(p => ({ ...p, bannerAd: true })),
-    5: () => setState(p => ({ ...p, gamAd: true })),
+    1: () => showAds(interstitialAd),
+    2: () => showAds(rewardAd),
+    3: () => setState(p => ({ ...p, bannerAd: !p.bannerAd })),
+    4: () => setState(p => ({ ...p, gamAd: !p.gamAd })),
   };
 
-  const onItemPress = (item, index) => methods[index]();
+  const onItemPress = (v, i) => methods[i]();
 
   return (
-    <RNContainer
-      // isLoading={isLoading}
-      headerTitle={Strings.GoogleAds}
-      LeftIcon={Images.Back}>
+    <RNContainer headerTitle={Strings.GoogleAds} LeftIcon={Images.Back}>
       <ScrollView>
         {State.bannerAd && (
           <BannerAd
             size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-            unitId={TestIds.BANNER}
-            // 'ca-app-pub-3940256099942544/6300978111'
+            unitId={bannerId}
             onPaid={e => console.log('BannerAd onPaid -> ', e)}
             onAdFailedToLoad={error => {
               console.log('Error BannerAd -> ', error);

@@ -10,14 +10,15 @@ import { getAdData } from '../Redux';
 
 const Screens = ({ navigation }) => {
   const { contentContainerStyle } = useFlatlistStyles();
-  const { AdData } = useSelector(({ AdReducer }) => AdReducer);
   const dispatch = useDispatch();
 
-  // console.log('AdData -> ', JSON.stringify(AdData, null, 2));
-
   useEffect(() => {
-    dispatch(getAdData());
+    callRequiredApis();
   }, []);
+
+  const callRequiredApis = () => {
+    dispatch(getAdData());
+  };
 
   const onItemPress = item => {
     if (item.navigate) {

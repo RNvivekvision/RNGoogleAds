@@ -3,109 +3,84 @@ import {
   AdEventType,
   AppOpenAd,
   InterstitialAd,
-  MaxAdContentRating,
-  MobileAds,
   RewardedAd,
   RewardedAdEventType,
-  RewardedInterstitialAd,
   TestIds,
 } from 'react-native-google-mobile-ads';
+import { useSelector } from 'react-redux';
 
-const adUnitId = TestIds.APP_OPEN;
-const interstitialUnitId = TestIds.INTERSTITIAL;
-const rewardedUnitId = TestIds.REWARDED;
-const rewardedInterstitialUnitId = TestIds.REWARDED_INTERSTITIAL;
 const keywords = ['fashion', 'clothing', 'Cookies', 'Brownies', 'Cupcakes'];
-
-const appOpenAd = AppOpenAd.createForAdRequest(adUnitId, {
-  // keywords: keywords,
-});
-const interstitial = InterstitialAd.createForAdRequest(interstitialUnitId, {
-  // keywords: keywords,
-});
-const rewarded = RewardedAd.createForAdRequest(rewardedUnitId, {
-  // keywords: keywords,
-});
-const rewardedInterstitial = RewardedInterstitialAd.createForAdRequest(
-  rewardedInterstitialUnitId,
-  // { keywords: keywords },
-);
 
 const useGoogleAds = () => {
   const [State, setState] = useState({ isLoading: 0 });
+  const { AdData } = useSelector(({ AdReducer }) => AdReducer);
+  const Admob = AdData?.data?.placement?.Admob;
+  console.log('Admob -> ', JSON.stringify(Admob, null, 2));
+
+  const appOpenId = __DEV__ ? TestIds.APP_OPEN : Admob?.appOpen;
+  const interstitialId = __DEV__ ? TestIds.INTERSTITIAL : Admob?.interstitial;
+  const rewardId = __DEV__ ? TestIds.REWARDED : Admob?.rewarded;
+
+  const appOpenAd = AppOpenAd.createForAdRequest(appOpenId);
+  const interstitialAd = InterstitialAd.createForAdRequest(interstitialId);
+  const rewardAd = RewardedAd.createForAdRequest(rewardId);
 
   useEffect(() => {
-    // initializeMobileAds();
-  }, []);
-
-  useEffect(() => {
-    const interstitialLoaded = interstitial.addAdEventListener(
+    const interstitialLoaded = interstitialAd.addAdEventListener(
       AdEventType.LOADED,
       () => setState(p => ({ ...p, isLoading: p.isLoading + 1 })),
     );
 
-    const rewardedLoad = rewarded.addAdEventListener(
+    const rewardedLoad = rewardAd.addAdEventListener(
       RewardedAdEventType.LOADED,
       () => setState(p => ({ ...p, isLoading: p.isLoading + 1 })),
     );
-    const rewardedEarn = rewarded.addAdEventListener(
+    const rewardedEarn = rewardAd.addAdEventListener(
       RewardedAdEventType.EARNED_REWARD,
       reward => console.log('rewardedEarn => ', reward),
     );
 
-    const rewardedInterstitialLoad = rewardedInterstitial.addAdEventListener(
-      RewardedAdEventType.LOADED,
-      () => setState(p => ({ ...p, isLoading: p.isLoading + 1 })),
-    );
-    const rewardedInterstitialEarn = rewardedInterstitial.addAdEventListener(
-      RewardedAdEventType.EARNED_REWARD,
-      reward => console.log('rewardedInterstitialEarn => ', reward),
-    );
-
     appOpenAd.load();
-    interstitial.load();
-    rewarded.load();
-    rewardedInterstitial.load();
+    interstitialAd.load();
+    rewardAd.load();
 
     return () => {
       interstitialLoaded();
       rewardedLoad();
       rewardedEarn();
-      rewardedInterstitialLoad();
-      rewardedInterstitialEarn();
     };
   }, []);
 
   return {
     appOpenAd,
-    interstitial,
-    rewarded,
-    rewardedInterstitial,
+    interstitialAd,
+    rewardAd,
+    Admob,
     isLoading: State.isLoading < 3,
   };
 };
 
-const initializeMobileAds = async () => {
-  try {
-    await MobileAds().setRequestConfiguration({
-      // Update all future requests suitable for parental guidance
-      maxAdContentRating: MaxAdContentRating.PG,
+// const initializeMobileAds = async () => {
+//   try {
+//     await MobileAds().setRequestConfiguration({
+//       // Update all future requests suitable for parental guidance
+//       maxAdContentRating: MaxAdContentRating.PG,
 
-      // Indicates that you want your content treated as child-directed for purposes of COPPA.
-      tagForChildDirectedTreatment: true,
+//       // Indicates that you want your content treated as child-directed for purposes of COPPA.
+//       tagForChildDirectedTreatment: true,
 
-      // Indicates that you want the ad request to be handled in a
-      // manner suitable for users under the age of consent.
-      tagForUnderAgeOfConsent: true,
+//       // Indicates that you want the ad request to be handled in a
+//       // manner suitable for users under the age of consent.
+//       tagForUnderAgeOfConsent: true,
 
-      // An array of test device IDs to allow.
-      testDeviceIdentifiers: ['EMULATOR'],
-    });
-    const response = await MobileAds().initialize();
-    console.log('Init MobileAds -> ', JSON.stringify(response, null, 2));
-  } catch (e) {
-    console.log('Error Initializing Mobile ads -> ', e);
-  }
-};
+//       // An array of test device IDs to allow.
+//       testDeviceIdentifiers: ['EMULATOR'],
+//     });
+//     const response = await MobileAds().initialize();
+//     console.log('Init MobileAds -> ', JSON.stringify(response, null, 2));
+//   } catch (e) {
+//     console.log('Error Initializing Mobile ads -> ', e);
+//   }
+// };
 
 export default useGoogleAds;

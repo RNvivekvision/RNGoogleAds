@@ -3,8 +3,8 @@ import { NavRoutes } from '../Navigation';
 
 const DummyData = {
   googleAdmob: {
-    android: 'ca-app-pub-3940256099942544~3347511713',
-    ios: 'ca-app-pub-3940256099942544~3347511713',
+    android_app_id: 'ca-app-pub-3940256099942544~3347511713',
+    ios_app_id: 'ca-app-pub-3940256099942544~1458002511',
   },
   Screens: [
     {
@@ -14,22 +14,19 @@ const DummyData = {
   ],
   TypesOfAds: [
     {
-      name: 'App Open Ads',
+      name: Strings.AppOpenAds,
     },
     {
-      name: 'Interstitial Ads',
+      name: Strings.InterstitialAds,
     },
     {
-      name: 'Rewarded Ads',
+      name: Strings.RewardAds,
     },
     {
-      name: 'Rewarded Interstitial Ads',
+      name: Strings.BannerAds,
     },
     {
-      name: 'Banner Ads',
-    },
-    {
-      name: 'GAM Ads',
+      name: Strings.GAMAds,
     },
   ],
 };

@@ -1,21 +1,26 @@
-import React, { useState } from 'react';
-import { ScrollView } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { ScrollView, View } from 'react-native';
 import {
   BannerAd,
   BannerAdSize,
   GAMBannerAd,
   TestIds,
 } from 'react-native-google-mobile-ads';
-import { RNContainer } from '../../../Common';
+import { RNContainer, RNText } from '../../../Common';
 import { RenderScreens } from '../../../Components';
 import { Images, Strings } from '../../../Constants';
 import { useGoogleAds } from '../../../Hooks';
 import { DummyData } from '../../../Utils';
+import NativeAd from './NativeAd';
 
 const GoogleAds = ({ navigation }) => {
   const { appOpenAd, interstitialAd, rewardAd, Admob } = useGoogleAds();
   const [State, setState] = useState({ bannerAd: false, gamAd: false });
   const bannerId = __DEV__ ? TestIds.ADAPTIVE_BANNER : Admob?.banner;
+  console.log({ Admob });
+  const nativeAdId = __DEV__
+    ? 'ca-app-pub-3940256099942544/2247696110'
+    : Admob?.nativeAdvanced;
 
   const showAds = async method => {
     try {
@@ -41,8 +46,6 @@ const GoogleAds = ({ navigation }) => {
     4: () => setState(p => ({ ...p, gamAd: !p.gamAd })),
   };
 
-  const onItemPress = (v, i) => methods[i]();
-
   return (
     <RNContainer headerTitle={Strings.GoogleAds} LeftIcon={Images.Back}>
       <ScrollView>
@@ -67,14 +70,25 @@ const GoogleAds = ({ navigation }) => {
           />
         )}
 
-        {DummyData.TypesOfAds.map((item, index) => (
-          <RenderScreens
-            key={index}
-            item={item}
-            index={index}
-            onPress={onItemPress}
-          />
-        ))}
+        {[
+          ...DummyData.TypesOfAds,
+          ...DummyData.TypesOfAds,
+          ...DummyData.TypesOfAds,
+          ...DummyData.TypesOfAds,
+        ].map((item, index) => {
+          return index % 5 == 0 ? (
+            <NativeAd nativeAdId={nativeAdId} />
+          ) : (
+            <RenderScreens
+              key={index}
+              item={item}
+              index={index}
+              onPress={(v, i) => methods[i]()}
+            />
+          );
+        })}
+
+        <NativeAd nativeAdId={nativeAdId} />
       </ScrollView>
     </RNContainer>
   );

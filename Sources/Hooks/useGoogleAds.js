@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   AdEventType,
   AppOpenAd,
@@ -14,8 +14,8 @@ const keywords = ['fashion', 'clothing', 'Cookies', 'Brownies', 'Cupcakes'];
 const useGoogleAds = () => {
   const [State, setState] = useState({ isLoading: 0 });
   const { AdData } = useSelector(({ AdReducer }) => AdReducer);
+  const NativeAdRef = useRef();
   const Admob = AdData?.data?.placement?.Admob;
-  console.log('Admob -> ', JSON.stringify(Admob, null, 2));
 
   const appOpenId = __DEV__ ? TestIds.APP_OPEN : Admob?.appOpen;
   const interstitialId = __DEV__ ? TestIds.INTERSTITIAL : Admob?.interstitial;
@@ -56,6 +56,7 @@ const useGoogleAds = () => {
     interstitialAd,
     rewardAd,
     Admob,
+    NativeAdRef,
     isLoading: State.isLoading < 3,
   };
 };
